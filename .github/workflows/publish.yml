@@ -58,14 +58,25 @@ jobs:
           VERSION=${GITHUB_REF#refs/tags/v}
           VERSION=${VERSION#refs/tags/}
           echo "Extracted version from tag: $VERSION"
-          npm version $VERSION --no-git-tag-version
-          echo "Updated package.json version to $VERSION"
+          CURRENT_VERSION=$(npm pkg get version | tr -d '"')
+          if [ "$CURRENT_VERSION" != "$VERSION" ]; then
+            npm version $VERSION --no-git-tag-version
+            echo "Updated package.json version from $CURRENT_VERSION to $VERSION"
+          else
+            echo "Package version already set to $VERSION, skipping update"
+          fi
       
       - name: Set version (if manual dispatch)
         if: github.event_name == 'workflow_dispatch'
         run: |
-          npm version ${{ github.event.inputs.version }} --no-git-tag-version
-          echo "Updated package.json version to ${{ github.event.inputs.version }}"
+          CURRENT_VERSION=$(npm pkg get version | tr -d '"')
+          NEW_VERSION="${{ github.event.inputs.version }}"
+          if [ "$CURRENT_VERSION" != "$NEW_VERSION" ]; then
+            npm version $NEW_VERSION --no-git-tag-version
+            echo "Updated package.json version from $CURRENT_VERSION to $NEW_VERSION"
+          else
+            echo "Package version already set to $NEW_VERSION, skipping update"
+          fi
       
       - name: Verify package
         run: |
