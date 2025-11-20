@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { enableArrayExtensions, disableArrayExtensions } from '../src/extensions';
 import { eq, gt, and, contains } from '../src/builders';
+import '../src/extensions.d';
 
 describe('extensions', () => {
   const users = [

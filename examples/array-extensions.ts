@@ -3,6 +3,9 @@
  * Demonstrates optional Array.prototype extensions
  */
 
+// Import types to activate TypeScript support for Array extensions
+import '../src/extensions.d';
+
 import {
   enableArrayExtensions,
   disableArrayExtensions,

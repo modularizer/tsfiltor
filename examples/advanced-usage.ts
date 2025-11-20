@@ -4,15 +4,15 @@
  */
 
 import {
-  eq,
-  gt,
-  and,
-  or,
-  isRecord,
-  matchesZodSchema,
-  filterEntities,
-  registerOperator,
-  evaluateCondition,
+    eq,
+    gt,
+    and,
+    or,
+    isRecord,
+    matchesZodSchema,
+    filterEntities,
+    registerOperator,
+    evaluateCondition, lt,
 } from '../src';
 import { ConditionOperator } from '../src/types';
 

@@ -2,10 +2,16 @@
  * Array prototype extensions
  * Optional extensions to add filter methods directly to Array.prototype
  * Use enableArrayExtensions() to activate
+ * 
+ * To get TypeScript types, import the types:
+ * import 'tsfiltor/extensions';
  */
 
 import { Filter } from './types';
 import { filterEntities, findFirst, matchExists, countWhere, findWhere } from './evaluator';
+
+// Import types to activate them when this module is imported
+/// <reference path="./extensions.d.ts" />
 
 /**
  * Enable Array prototype extensions

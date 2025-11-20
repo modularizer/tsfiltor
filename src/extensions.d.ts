@@ -1,6 +1,14 @@
 /**
  * TypeScript type definitions for Array prototype extensions
- * These types are automatically available when using enableArrayExtensions()
+ * Import this module to activate the types for Array extensions
+ * 
+ * @example
+ * import 'tsfiltor/extensions';
+ * import { enableArrayExtensions } from 'tsfiltor';
+ * 
+ * enableArrayExtensions();
+ * const users = [{ name: 'John', age: 25 }];
+ * users.where(...); // TypeScript now recognizes .where()
  */
 
 import { Filter } from './types';
@@ -61,4 +69,7 @@ declare global {
     findWhere(options?: { filter?: Filter; limit?: number; offset?: number }): T[];
   }
 }
+
+// Export empty object to make this a module (required for declare global to work)
+export {};
 

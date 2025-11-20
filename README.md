@@ -43,6 +43,8 @@ const activeAdults = filterEntities(users, condition);
 For a more fluent API, you can enable Array prototype extensions:
 
 ```typescript
+// Import types to activate TypeScript support
+import 'tsfiltor/extensions';
 import { enableArrayExtensions, eq, gt } from 'tsfiltor';
 
 // Enable extensions (opt-in)
@@ -63,7 +65,9 @@ const names = users
   .sort();
 ```
 
-**Note:** Extensions are opt-in. If you prefer the functional approach, you can use `filterEntities()`, `findFirst()`, etc. without enabling extensions.
+**Note:** 
+- Extensions are opt-in. If you prefer the functional approach, you can use `filterEntities()`, `findFirst()`, etc. without enabling extensions.
+- Import `'tsfiltor/extensions'` to get TypeScript type support for the Array extension methods.
 
 ## Available Operators
 
