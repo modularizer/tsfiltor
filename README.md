@@ -2,6 +2,8 @@
 
 A composable TypeScript filter system for querying and evaluating in-memory data. Provides a structured way to build complex query conditions that can be evaluated against entities.
 
+**Try it live:** Go to https://modularizer.github.io/tsfiltor 
+
 ## Features
 
 - 🎯 **Composable filters** - Build complex conditions with simple builder functions
@@ -42,7 +44,7 @@ The package works in browsers via CDN. Use [esm.sh](https://esm.sh) or similar C
 </script>
 ```
 
-**Try it live:** Open `playground.html` in your browser for an interactive playground with editable examples!
+**Try it live:** Go to https://modularizer.github.io/tsfiltor for an interactive playground with editable examples!
 
 ## Basic Usage
 
