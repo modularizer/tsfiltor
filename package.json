@@ -1,6 +1,6 @@
 {
   "name": "tsfiltor",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Composable TypeScript filters for querying and evaluating in-memory data.",
   "license": "Unlicense",
   "repository": {
