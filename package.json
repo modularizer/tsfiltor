@@ -1,6 +1,6 @@
 {
   "name": "tsfiltor",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Composable TypeScript filters for querying and evaluating in-memory data.",
   "license": "Unlicense",
   "repository": {
@@ -20,11 +20,15 @@
       "types": "./dist/index.d.ts"
     },
     "./extensions": {
+      "import": "./dist/extensions.js",
+      "require": "./dist/extensions.js",
       "types": "./dist/extensions.d.ts"
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "LICENSE"
   ],
   "scripts": {
     "clean": "rm -rf dist",
