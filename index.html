@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tsfiltor - Composable TypeScript Filters</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/monokai.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+            padding: 20px;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            overflow: visible;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: white;
+            color: #333;
+            padding: 40px 30px;
+            border-bottom: 1px solid #e0e0e0;
+            position: relative;
+        }
+
+        .github-link {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #333;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 8px 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            transition: all 0.2s;
+            background: white;
+        }
+
+        .github-link:hover {
+            border-color: #667eea;
+            color: #667eea;
+            background: #f9f9f9;
+        }
+
+        .github-link svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+
+        .header h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .header p {
+            color: #555;
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .header-content {
+            max-width: 100%;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .feature {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 3px solid #667eea;
+        }
+
+        .feature strong {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .feature {
+            color: #555;
+        }
+
+        .docs-section {
+            padding: 40px 30px;
+            max-width: 100%;
+            margin: 0;
+        }
+
+        .docs-section h2 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: #333;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+        }
+
+        .docs-section h3 {
+            font-size: 22px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            color: #444;
+        }
+
+        .docs-section p {
+            line-height: 1.8;
+            margin-bottom: 15px;
+            color: #555;
+        }
+
+        .docs-section ul, .docs-section ol {
+            margin-left: 20px;
+            margin-bottom: 15px;
+            line-height: 1.8;
+            color: #555;
+            font-size: 15px;
+        }
+
+        .docs-section li {
+            margin-bottom: 8px;
+        }
+
+        .docs-section code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            color: #d63384;
+        }
+
+        .docs-section pre {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .docs-section pre code {
+            background: none;
+            padding: 0;
+            color: inherit;
+        }
+
+        .playground-section {
+            margin: 40px 0;
+        }
+
+        .playground-section h2 {
+            margin-bottom: 20px;
+        }
+
+        .operator-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .operator-item {
+            padding: 12px;
+            background: #f9f9f9;
+            border-left: 3px solid #667eea;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .operator-item code {
+            font-weight: 600;
+            color: #d63384;
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: 2fr 4px 1fr;
+            grid-template-rows: 1fr;
+            gap: 0;
+            min-height: 500px;
+            height: 600px;
+            position: relative;
+            overflow: hidden;
+            margin: 0 30px 40px 30px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        @media (max-width: 968px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                max-height: none;
+            }
+            
+            .content {
+                grid-template-columns: 1fr;
+                grid-template-rows: 1fr 4px 1fr;
+                height: 600px;
+                margin: 0 10px 30px 10px;
+            }
+            
+            .editor-panel, .output-panel {
+                max-height: 40vh;
+            }
+            
+            .editor-container {
+                max-height: 40vh;
+            }
+            
+            .output-container {
+                max-height: 40vh;
+            }
+            
+            .docs-section {
+                padding: 30px 20px;
+            }
+            
+            .resizer {
+                display: block;
+                width: 100%;
+                height: 4px;
+                cursor: row-resize;
+            }
+            .resizer:hover {
+                background: #667eea;
+            }
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 0;
+            }
+            
+            .container {
+                border-radius: 0;
+                max-width: 100%;
+            }
+            
+            .header {
+                padding: 20px 15px;
+            }
+            
+            .github-link {
+                top: 15px;
+                right: 15px;
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+            
+            .github-link svg {
+                width: 16px;
+                height: 16px;
+            }
+            
+            .github-link span {
+                display: none;
+            }
+            
+            .header h1 {
+                font-size: 28px;
+            }
+            
+            .header p {
+                font-size: 16px;
+            }
+            
+            .features {
+                grid-template-columns: 1fr;
+            }
+            
+            .content {
+                height: 500px;
+                margin: 0 5px 20px 5px;
+            }
+            
+            .docs-section {
+                padding: 20px 15px;
+            }
+            
+            .docs-section h2 {
+                font-size: 24px;
+            }
+            
+            .operator-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .resizer {
+            width: 4px;
+            background: #e0e0e0;
+            cursor: col-resize;
+            position: relative;
+            z-index: 10;
+            transition: background 0.2s;
+        }
+
+        .resizer:hover {
+            background: #667eea;
+        }
+
+        .resizer.active {
+            background: #667eea;
+        }
+
+        .editor-panel, .output-panel {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .panel-header {
+            background: #f5f5f5;
+            padding: 6px 12px;
+            border-bottom: 1px solid #e0e0e0;
+            font-weight: 600;
+            color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            font-size: 13px;
+        }
+
+        .panel-header-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .panel-header-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            justify-content: flex-end;
+        }
+
+        .panel-header-title::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #4caf50;
+        }
+
+        .output-panel .panel-header-title::before {
+            background: #2196f3;
+        }
+
+        .editor-container {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .editor-container .CodeMirror {
+            flex: 1;
+            height: 100% !important;
+        }
+
+        #codeEditor {
+            width: 100%;
+            height: 100%;
+            font-size: 14px;
+        }
+
+        .CodeMirror {
+            height: 100% !important;
+            width: 100% !important;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .CodeMirror-scroll {
+            height: 100% !important;
+        }
+
+        .CodeMirror-wrap {
+            height: 100% !important;
+        }
+
+        .CodeMirror-sizer {
+            min-height: 100% !important;
+        }
+
+        .output-container {
+            flex: 1;
+            padding: 20px;
+            background: #1e1e1e;
+            color: #d4d4d4;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            overflow-y: auto;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            min-height: 0;
+        }
+
+        .output-container.error {
+            color: #f48771;
+        }
+
+        .output-container.success {
+            color: #4ec9b0;
+        }
+
+
+        button {
+            padding: 4px 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            white-space: nowrap;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .status {
+            font-size: 12px;
+            color: #666;
+            white-space: nowrap;
+        }
+
+        .status.loading {
+            color: #667eea;
+        }
+
+        .status.error {
+            color: #f44336;
+        }
+
+        .status.success {
+            color: #4caf50;
+        }
+
+        .example-select {
+            padding: 4px 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 11px;
+            background: white;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .log-entry {
+            margin-bottom: 8px;
+            padding: 4px 0;
+        }
+
+        .log-entry.error {
+            color: #f48771;
+        }
+
+        .log-entry.warn {
+            color: #dcdcaa;
+        }
+
+        .log-entry.info {
+            color: #4ec9b0;
+        }
+
+        .docs-section a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .docs-section a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="https://github.com/modularizer/tsfiltor" target="_blank" rel="noopener noreferrer" class="github-link">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                </svg>
+                <span>GitHub</span>
+            </a>
+            <div class="header-content">
+                <h1>tsfiltor</h1>
+                <p>A composable TypeScript filter system for querying and evaluating in-memory data. Provides a structured way to build complex query conditions that can be evaluated against entities.</p>
+                <div class="features">
+                    <div class="feature">
+                        <strong>🎯 Composable filters</strong>
+                        Build complex conditions with simple builder functions
+                    </div>
+                    <div class="feature">
+                        <strong>🔍 Rich operators</strong>
+                        Equality, comparison, string matching, regex, type checking, and more
+                    </div>
+                    <div class="feature">
+                        <strong>🧩 Logical operations</strong>
+                        AND, OR, NOT with nested conditions
+                    </div>
+                    <div class="feature">
+                        <strong>🚀 Array extensions</strong>
+                        Optional prototype extensions for fluent API
+                    </div>
+                    <div class="feature">
+                        <strong>🔧 Extensible</strong>
+                        Register custom operators easily
+                    </div>
+                    <div class="feature">
+                        <strong>📦 Type-safe</strong>
+                        Full TypeScript support
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="docs-section">
+            <h2>Installation</h2>
+            <pre><code>npm install tsfiltor</code></pre>
+            
+            <h3>Universal Compatibility</h3>
+            <p>This package is built with <strong>dual module support</strong> (ESM + CommonJS) for maximum compatibility:</p>
+            <ul>
+                <li>✅ <strong>Node.js</strong> (ESM and CommonJS) - Node 18+</li>
+                <li>✅ <strong>Browsers</strong> (ESM via CDN or bundlers)</li>
+                <li>✅ <strong>React Native</strong> (CommonJS) - Full support</li>
+                <li>✅ <strong>Bundlers</strong> (Webpack, Vite, Rollup, etc.) - Auto-detects format</li>
+                <li>✅ <strong>TypeScript</strong> (full type support)</li>
+            </ul>
+            <p>The package automatically serves the correct format:</p>
+            <ul>
+                <li><code>import { ... } from 'tsfiltor'</code> → ESM (browsers, modern Node.js, bundlers)</li>
+                <li><code>const { ... } = require('tsfiltor')</code> → CommonJS (React Native, older tools)</li>
+            </ul>
+
+            <h3>Browser Usage</h3>
+            <p>The package works in browsers via CDN. Use <a href="https://esm.sh" target="_blank">esm.sh</a> or similar CDN:</p>
+            <pre><code>&lt;script type="module"&gt;
+  import { eq, gt, filterEntities } from 'https://esm.sh/tsfiltor@latest';
+  // Use the library...
+&lt;/script&gt;</code></pre>
+
+            <div class="playground-section">
+                <h2>Try It Live</h2>
+                <p>Edit the code below and click "Run" to see the results. The package is loaded from npm via esm.sh CDN.</p>
+            </div>
+        </div>
+        <div class="content">
+            <div class="editor-panel">
+                <div class="panel-header">
+                    <div class="panel-header-title">Editor</div>
+                    <div class="panel-header-controls">
+                        <button id="runBtn">▶ Run</button>
+                        <select id="exampleSelect" class="example-select">
+                            <option value="default">Default Example</option>
+                            <option value="basic">Basic Usage</option>
+                            <option value="advanced">Advanced Filters</option>
+                            <option value="chaining">Method Chaining</option>
+                        </select>
+                        <div class="status" id="status">Ready</div>
+                    </div>
+                </div>
+                <div class="editor-container">
+                    <textarea id="codeEditorTextarea" style="display: none;">// Import types and functions - this activates TypeScript support for Array extensions
+import 'https://esm.sh/tsfiltor@latest/extensions';
+import { enableArrayExtensions } from 'https://esm.sh/tsfiltor@latest/extensions';
+import { eq, gt, contains } from 'https://esm.sh/tsfiltor@latest';
+
+// Enable extensions (opt-in)
+enableArrayExtensions();
+
+const users = [
+    { id: 1, name: 'John Doe', age: 30, email: 'john@example.com', status: 'active', tags: ['vip', 'premium'] },
+    { id: 2, name: 'Jane Smith', age: 25, email: 'jane@example.com', status: 'active', tags: ['premium'] },
+    { id: 3, name: 'Bob Johnson', age: 18, email: 'bob@test.com', status: 'inactive', tags: [] },
+    { id: 4, name: 'Alice Brown', age: 35, email: 'alice@example.com', status: 'pending', tags: ['vip'] },
+];
+
+// Now arrays have .where(), .first(), .exists(), .count(), and .findWhere()
+const activeUsers = users.where(eq('status', 'active'));
+console.log('Active users:', activeUsers);
+
+const john = users.first(eq('name', 'John'));
+console.log('John:', john);
+
+const hasVip = users.exists(contains('tags', 'vip'));
+console.log('Has VIP users:', hasVip);
+
+const count = users.count(gt('age', 25));
+console.log('Users over 25:', count);
+
+// Chain with native array methods
+const names = users
+  .where(gt('age', 20))
+  .map(u => u.name)
+  .sort();
+console.log('Names of users over 20 (sorted):', names);</textarea>
+                </div>
+            </div>
+            <div class="resizer" id="resizer"></div>
+            <div class="output-panel">
+                <div class="panel-header">
+                    <div class="panel-header-title">Output</div>
+                </div>
+                <div class="output-container" id="output"></div>
+            </div>
+        </div>
+        
+        <div class="docs-section">
+            <h2>Available Operators</h2>
+            
+            <h3>Comparison</h3>
+            <div class="operator-list">
+                <div class="operator-item"><code>eq(field, value)</code> - Equality</div>
+                <div class="operator-item"><code>ne(field, value)</code> - Not equal</div>
+                <div class="operator-item"><code>lt(field, value)</code> - Less than</div>
+                <div class="operator-item"><code>lte(field, value)</code> - Less than or equal</div>
+                <div class="operator-item"><code>gt(field, value)</code> - Greater than</div>
+                <div class="operator-item"><code>gte(field, value)</code> - Greater than or equal</div>
+            </div>
+
+            <h3>String Operations</h3>
+            <div class="operator-list">
+                <div class="operator-item"><code>contains(field, value)</code> - String/array contains</div>
+                <div class="operator-item"><code>startsWith(field, value)</code> - String starts with</div>
+                <div class="operator-item"><code>endsWith(field, value)</code> - String ends with</div>
+                <div class="operator-item"><code>matches(field, pattern)</code> - Regex pattern match</div>
+            </div>
+
+            <h3>Array Operations</h3>
+            <div class="operator-list">
+                <div class="operator-item"><code>anyOf(field, values[])</code> - Value is in array</div>
+                <div class="operator-item"><code>minLength(field, n)</code> - Minimum length</div>
+                <div class="operator-item"><code>maxLength(field, n)</code> - Maximum length</div>
+            </div>
+
+            <h3>Type Checking</h3>
+            <div class="operator-list">
+                <div class="operator-item"><code>isRecord(field)</code> - Is plain object/Record</div>
+                <div class="operator-item"><code>matchesZodSchema(field, schema)</code> - Matches Zod schema</div>
+            </div>
+
+            <h3>Logical</h3>
+            <div class="operator-list">
+                <div class="operator-item"><code>and(...conditions)</code> - All conditions must match</div>
+                <div class="operator-item"><code>or(...conditions)</code> - Any condition must match</div>
+                <div class="operator-item"><code>not(condition)</code> - Negate condition</div>
+            </div>
+
+            <h2>API Reference</h2>
+            
+            <h3>Core Functions</h3>
+            <ul>
+                <li><code>evaluateCondition(entity, condition)</code> - Evaluate condition against entity</li>
+                <li><code>filterEntities(entities, filter?)</code> - Filter array of entities</li>
+                <li><code>findFirst(entities, filter?)</code> - Find first matching entity</li>
+                <li><code>matchExists(entities, filter?)</code> - Check if any entity matches</li>
+                <li><code>countWhere(entities, filter?)</code> - Count matching entities</li>
+                <li><code>findWhere(entities, options?)</code> - Find with pagination support</li>
+            </ul>
+
+            <h3>Extension Functions</h3>
+            <ul>
+                <li><code>enableArrayExtensions(options?)</code> - Enable Array prototype extensions</li>
+                <li><code>disableArrayExtensions()</code> - Disable Array prototype extensions</li>
+                <li><code>registerOperator(operator, evaluator)</code> - Register custom operator</li>
+            </ul>
+
+            <h2>License</h2>
+            <p><strong>Unlicense</strong> - This is free and unencumbered software released into the public domain.</p>
+            <p>For more information, see <a href="https://unlicense.org" target="_blank">unlicense.org</a></p>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/typescript/typescript.min.js"></script>
+    <script type="module">
+        const codeEditorTextarea = document.getElementById('codeEditorTextarea');
+        const output = document.getElementById('output');
+        const runBtn = document.getElementById('runBtn');
+        const status = document.getElementById('status');
+        const exampleSelect = document.getElementById('exampleSelect');
+        const resizer = document.getElementById('resizer');
+        const content = document.querySelector('.content');
+
+        // Declare runCode function first (will be defined later)
+        let runCode;
+        
+        // Initialize CodeMirror
+        const codeEditor = CodeMirror.fromTextArea(codeEditorTextarea, {
+            mode: 'javascript',
+            theme: 'monokai',
+            lineNumbers: true,
+            indentUnit: 2,
+            tabSize: 2,
+            indentWithTabs: false,
+            lineWrapping: true,
+            autofocus: true,
+            extraKeys: {
+                'Ctrl-Enter': () => runCode(),
+                'Cmd-Enter': () => runCode(),
+            }
+        });
+
+        // Refresh CodeMirror to ensure proper sizing
+        setTimeout(() => {
+            codeEditor.refresh();
+            codeEditor.setSize('100%', '100%');
+        }, 100);
+        
+        // Also refresh on window resize
+        window.addEventListener('resize', () => {
+            codeEditor.refresh();
+        });
+
+        const examples = {
+            default: `// Import types and functions - this activates TypeScript support for Array extensions
+import 'https://esm.sh/tsfiltor@latest/extensions';
+import { enableArrayExtensions } from 'https://esm.sh/tsfiltor@latest/extensions';
+import { eq, gt, contains } from 'https://esm.sh/tsfiltor@latest';
+
+// Enable extensions (opt-in)
+enableArrayExtensions();
+
+const users = [
+    { id: 1, name: 'John Doe', age: 30, email: 'john@example.com', status: 'active', tags: ['vip', 'premium'] },
+    { id: 2, name: 'Jane Smith', age: 25, email: 'jane@example.com', status: 'active', tags: ['premium'] },
+    { id: 3, name: 'Bob Johnson', age: 18, email: 'bob@test.com', status: 'inactive', tags: [] },
+    { id: 4, name: 'Alice Brown', age: 35, email: 'alice@example.com', status: 'pending', tags: ['vip'] },
+];
+
+// Now arrays have .where(), .first(), .exists(), .count(), and .findWhere()
+const activeUsers = users.where(eq('status', 'active'));
+console.log('Active users:', activeUsers);
+
+const john = users.first(eq('name', 'John'));
+console.log('John:', john);
+
+const hasVip = users.exists(contains('tags', 'vip'));
+console.log('Has VIP users:', hasVip);
+
+const count = users.count(gt('age', 25));
+console.log('Users over 25:', count);
+
+// Chain with native array methods
+const names = users
+  .where(gt('age', 20))
+  .map(u => u.name)
+  .sort();
+console.log('Names of users over 20 (sorted):', names);`,
+            basic: `import { filterEntities, eq, gt } from 'https://esm.sh/tsfiltor@latest';
+
+const products = [
+    { name: 'Laptop', price: 999, category: 'electronics' },
+    { name: 'Phone', price: 699, category: 'electronics' },
+    { name: 'Desk', price: 299, category: 'furniture' },
+];
+
+// Filter expensive electronics
+const expensiveElectronics = filterEntities(products, gt('price', 700));
+console.log('Expensive electronics:', expensiveElectronics);
+
+// Filter by category
+const electronics = filterEntities(products, eq('category', 'electronics'));
+console.log('All electronics:', electronics);`,
+            advanced: `import { filterEntities, and, or, contains, startsWith } from 'https://esm.sh/tsfiltor@latest';
+
+const posts = [
+    { title: 'Getting Started with TypeScript', tags: ['typescript', 'tutorial'], views: 1000 },
+    { title: 'Advanced React Patterns', tags: ['react', 'advanced'], views: 500 },
+    { title: 'TypeScript Best Practices', tags: ['typescript', 'best-practices'], views: 2000 },
+];
+
+// Complex filter: TypeScript posts with high views OR advanced posts
+const filtered = filterEntities(posts, or(
+    and(contains('tags', 'typescript'), gt('views', 1500)),
+    contains('tags', 'advanced')
+));
+console.log('Filtered posts:', filtered);`,
+            chaining: `import 'https://esm.sh/tsfiltor@latest/extensions';
+import { enableArrayExtensions } from 'https://esm.sh/tsfiltor@latest/extensions';
+import { eq, gt, contains } from 'https://esm.sh/tsfiltor@latest';
+
+enableArrayExtensions();
+
+const data = [
+    { id: 1, name: 'Alice', age: 30, role: 'admin', active: true },
+    { id: 2, name: 'Bob', age: 25, role: 'user', active: true },
+    { id: 3, name: 'Charlie', age: 35, role: 'admin', active: false },
+    { id: 4, name: 'Diana', age: 28, role: 'user', active: true },
+];
+
+// Chain multiple operations
+const result = data
+    .where(gt('age', 25))
+    .where(eq('active', true))
+    .map(u => u.name.toUpperCase())
+    .sort();
+console.log('Active users over 25 (uppercase, sorted):', result);`
+        };
+
+        // Capture console methods
+        const originalLog = console.log;
+        const originalError = console.error;
+        const originalWarn = console.warn;
+        const originalInfo = console.info;
+
+        function clearOutput() {
+            output.textContent = '';
+            output.className = 'output-container';
+        }
+
+        function addLogEntry(message, type = 'info') {
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            entry.textContent = message;
+            output.appendChild(entry);
+            output.scrollTop = output.scrollHeight;
+        }
+
+        function setupConsoleCapture() {
+            console.log = (...args) => {
+                originalLog(...args);
+                const message = args.map(arg => {
+                    if (typeof arg === 'object') {
+                        try {
+                            return JSON.stringify(arg, null, 2);
+                        } catch {
+                            return String(arg);
+                        }
+                    }
+                    return String(arg);
+                }).join(' ');
+                addLogEntry(message, 'info');
+            };
+
+            console.error = (...args) => {
+                originalError(...args);
+                addLogEntry(args.join(' '), 'error');
+            };
+
+            console.warn = (...args) => {
+                originalWarn(...args);
+                addLogEntry(args.join(' '), 'warn');
+            };
+
+            console.info = (...args) => {
+                originalInfo(...args);
+                addLogEntry(args.join(' '), 'info');
+            };
+        }
+
+        function restoreConsole() {
+            console.log = originalLog;
+            console.error = originalError;
+            console.warn = originalWarn;
+            console.info = originalInfo;
+        }
+
+        runCode = async function() {
+            clearOutput();
+            status.textContent = 'Running...';
+            status.className = 'status loading';
+            runBtn.disabled = true;
+
+            setupConsoleCapture();
+
+            try {
+                const code = codeEditor.getValue();
+                
+                // Create a new module with the user's code
+                const blob = new Blob([code], { type: 'application/javascript' });
+                const url = URL.createObjectURL(blob);
+                
+                try {
+                    await import(url);
+                    status.textContent = '✓ Success';
+                    status.className = 'status success';
+                    output.className = 'output-container success';
+                } catch (error) {
+                    throw error;
+                } finally {
+                    URL.revokeObjectURL(url);
+                }
+            } catch (error) {
+                status.textContent = '✗ Error';
+                status.className = 'status error';
+                output.className = 'output-container error';
+                addLogEntry(`Error: ${error.message}`, 'error');
+                if (error.stack) {
+                    addLogEntry(error.stack, 'error');
+                }
+            } finally {
+                restoreConsole();
+                runBtn.disabled = false;
+            }
+        };
+
+        exampleSelect.addEventListener('change', (e) => {
+            const example = examples[e.target.value];
+            if (example) {
+                codeEditor.setValue(example);
+            }
+        });
+
+        runBtn.addEventListener('click', runCode);
+
+        // CodeMirror handles keyboard shortcuts via extraKeys config
+
+        // Resizer functionality
+        let isResizing = false;
+        let startX = 0;
+        let startY = 0;
+        let startWidth = 0;
+        let startHeight = 0;
+        let isVertical = false;
+
+        function checkLayout() {
+            const isMobile = window.innerWidth <= 968;
+            isVertical = isMobile;
+            return isMobile;
+        }
+
+        resizer.addEventListener('mousedown', (e) => {
+            isResizing = true;
+            const isMobile = checkLayout();
+            if (isMobile) {
+                startY = e.clientY;
+                const editorPanel = document.querySelector('.editor-panel');
+                startHeight = editorPanel.offsetHeight;
+                document.body.style.cursor = 'row-resize';
+            } else {
+                startX = e.clientX;
+                const editorPanel = document.querySelector('.editor-panel');
+                startWidth = editorPanel.offsetWidth;
+                document.body.style.cursor = 'col-resize';
+            }
+            resizer.classList.add('active');
+            document.body.style.userSelect = 'none';
+            e.preventDefault();
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isResizing) return;
+            
+            if (isVertical) {
+                const deltaY = e.clientY - startY;
+                const newHeight = startHeight + deltaY;
+                const containerHeight = content.offsetHeight;
+                const minHeight = containerHeight * 0.2; // 20% minimum
+                const maxHeight = containerHeight * 0.8; // 80% maximum
+                
+                if (newHeight >= minHeight && newHeight <= maxHeight) {
+                    const percentage = (newHeight / containerHeight) * 100;
+                    const remaining = 100 - percentage;
+                    content.style.gridTemplateRows = `${percentage}% 4px ${remaining}%`;
+                }
+            } else {
+                const deltaX = e.clientX - startX;
+                const newWidth = startWidth + deltaX;
+                const containerWidth = content.offsetWidth;
+                const minWidth = containerWidth * 0.2; // 20% minimum
+                const maxWidth = containerWidth * 0.8; // 80% maximum
+                
+                if (newWidth >= minWidth && newWidth <= maxWidth) {
+                    const percentage = (newWidth / containerWidth) * 100;
+                    const remaining = 100 - percentage;
+                    content.style.gridTemplateColumns = `${percentage}% 4px ${remaining}%`;
+                }
+            }
+        });
+
+        document.addEventListener('mouseup', () => {
+            if (isResizing) {
+                isResizing = false;
+                resizer.classList.remove('active');
+                document.body.style.cursor = '';
+                document.body.style.userSelect = '';
+            }
+        });
+
+        // Update layout on window resize
+        window.addEventListener('resize', () => {
+            if (!isResizing) {
+                checkLayout();
+                // Reset grid template to default on resize
+                if (window.innerWidth <= 968) {
+                    content.style.gridTemplateRows = '';
+                    content.style.gridTemplateColumns = '';
+                } else {
+                    content.style.gridTemplateColumns = '';
+                    content.style.gridTemplateRows = '';
+                }
+            }
+        });
+
+        // Initial run
+        setTimeout(runCode, 500);
+    </script>
+</body>
+</html>

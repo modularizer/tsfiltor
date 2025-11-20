@@ -17,6 +17,33 @@ A composable TypeScript filter system for querying and evaluating in-memory data
 npm install tsfiltor
 ```
 
+### Universal Compatibility
+
+This package is built with **dual module support** (ESM + CommonJS) for maximum compatibility:
+
+- ✅ **Node.js** (ESM and CommonJS) - Node 18+
+- ✅ **Browsers** (ESM via CDN or bundlers)
+- ✅ **React Native** (CommonJS) - Full support
+- ✅ **Bundlers** (Webpack, Vite, Rollup, etc.) - Auto-detects format
+- ✅ **TypeScript** (full type support)
+
+The package automatically serves the correct format:
+- `import { ... } from 'tsfiltor'` → ESM (browsers, modern Node.js, bundlers)
+- `const { ... } = require('tsfiltor')` → CommonJS (React Native, older tools)
+
+### Browser Usage
+
+The package works in browsers via CDN. Use [esm.sh](https://esm.sh) or similar CDN:
+
+```html
+<script type="module">
+  import { eq, gt, filterEntities } from 'https://esm.sh/tsfiltor@latest';
+  // Use the library...
+</script>
+```
+
+**Try it live:** Open `playground.html` in your browser for an interactive playground with editable examples!
+
 ## Basic Usage
 
 ```typescript
