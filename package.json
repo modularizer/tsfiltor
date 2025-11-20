@@ -34,8 +34,7 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "pre-commit": "npm test && npm run typecheck",
-    "prepare": "husky install || true",
-    "postinstall": "npm run build"
+    "prepare": "husky install || true"
   },
   "keywords": [
     "filters",
