@@ -1,16 +1,16 @@
 {
   "name": "tsfiltor",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Composable TypeScript filters for querying and evaluating in-memory data.",
   "license": "Unlicense",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/your-org/tsfiltor.git"
+    "url": "git+https://github.com/modularizer/tsfiltor.git"
   },
   "bugs": {
-    "url": "https://github.com/your-org/tsfiltor/issues"
+    "url": "https://github.com/modularizer/tsfiltor/issues"
   },
-  "homepage": "https://github.com/your-org/tsfiltor#readme",
+  "homepage": "https://github.com/modularizer/tsfiltor#readme",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
