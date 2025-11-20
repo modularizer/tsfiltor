@@ -40,12 +40,13 @@ const activeAdults = filterEntities(users, condition);
 
 ## Array Extensions (Optional)
 
-For a more fluent API, you can enable Array prototype extensions:
+For a more fluent API, you can enable Array prototype extensions. **The types are only available when you explicitly import the extensions module:**
 
 ```typescript
-// Import types to activate TypeScript support
+// Import types and functions - this activates TypeScript support for Array extensions
 import 'tsfiltor/extensions';
-import { enableArrayExtensions, eq, gt } from 'tsfiltor';
+import { enableArrayExtensions } from 'tsfiltor/extensions';
+import { eq, gt, contains } from 'tsfiltor';
 
 // Enable extensions (opt-in)
 enableArrayExtensions();
@@ -72,7 +73,8 @@ const names = users
 
 **Note:** 
 - Extensions are opt-in. If you prefer the functional approach, you can use `filterEntities()`, `findFirst()`, etc. without enabling extensions.
-- Import `'tsfiltor/extensions'` to get TypeScript type support for the Array extension methods.
+- **You must import `'tsfiltor/extensions'` to get TypeScript type support** - the types are NOT included in the main package export.
+- Importing `'tsfiltor/extensions'` activates the `declare global` block, making the Array extension methods available to TypeScript.
 
 ## Available Operators
 
