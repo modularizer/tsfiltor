@@ -50,13 +50,18 @@ import { enableArrayExtensions, eq, gt } from 'tsfiltor';
 // Enable extensions (opt-in)
 enableArrayExtensions();
 
-const users = [/* ... */];
+const users = [
+    { id: 1, name: 'John Doe', age: 30, email: 'john@example.com', status: 'active', tags: ['vip', 'premium'] },
+    { id: 2, name: 'Jane Smith', age: 25, email: 'jane@example.com', status: 'active', tags: ['premium'] },
+    { id: 3, name: 'Bob Johnson', age: 18, email: 'bob@test.com', status: 'inactive', tags: [] },
+    { id: 4, name: 'Alice Brown', age: 35, email: 'alice@example.com', status: 'pending', tags: ['vip'] },
+];
 
 // Now arrays have .where(), .first(), .exists(), .count(), and .findWhere()
 const activeUsers = users.where(eq('status', 'active'));
 const john = users.first(eq('name', 'John'));
 const hasVip = users.exists(contains('tags', 'vip'));
-const count = users.count(gt('age', 18));
+const count = users.count(gt('age', 25));
 
 // Chain with native array methods
 const names = users
