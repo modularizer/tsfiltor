@@ -1,0 +1,50 @@
+{
+  "name": "tsfiltor",
+  "version": "0.1.0",
+  "description": "Composable TypeScript filters for querying and evaluating in-memory data.",
+  "license": "Unlicense",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/your-org/tsfiltor.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-org/tsfiltor/issues"
+  },
+  "homepage": "https://github.com/your-org/tsfiltor#readme",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build": "npm run clean && tsc -p tsconfig.json",
+    "typecheck": "tsc --noEmit",
+    "prepare": "npm run build",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
+  },
+  "keywords": [
+    "filters",
+    "query",
+    "typescript",
+    "conditions"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0",
+    "vitest": "^1.6.0",
+    "@vitest/coverage-v8": "^1.6.0"
+  }
+}
+
